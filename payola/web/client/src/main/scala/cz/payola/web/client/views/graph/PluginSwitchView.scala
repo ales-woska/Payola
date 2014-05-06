@@ -23,6 +23,7 @@ import cz.payola.web.client.views.graph.empty.EmptyPluginView
 import cz.payola.web.client.util.UriHashTools
 import cz.payola.web.client.views.d3.packLayout._
 import cz.payola.web.client.views.datacube.DataCubeVisualizer
+import cz.payola.web.client.views.gve.GraphVisualEditorView
 
 class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[String] = None, analysisId: Option[String]) extends GraphView with ComposedView
 {
@@ -81,7 +82,8 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
         new Sunburst(Some(prefixApplier)),
         new ZoomableSunburst(Some(prefixApplier)),
         new ZoomableTreemap(Some(prefixApplier)),
-        new DataCubeVisualizer(Some(prefixApplier))
+        new DataCubeVisualizer(Some(prefixApplier)),
+        new GraphVisualEditorView(Some(prefixApplier))
     )
 
     /**
