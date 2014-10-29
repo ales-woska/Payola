@@ -2,14 +2,11 @@ package cz.payola.web.client.views.gve.data
 
 import cz.payola.common.rdf._
 import s2js.adapters.html
-import cz.payola.web.client.views.gve.layout.Layout
-import s2js.compiler.javascript
 
-class RdfStructure (
-    val graph: Graph)
-{
+class RdfStructure (val graph: Graph) {
     var classes: List[RdfClass] = List()
     var lines: List[RdfProperty] = List()
+    this.constructDataStructure()
 
     def constructDataStructure() = {
         // find all classes
@@ -47,6 +44,17 @@ class RdfStructure (
         classes = classes ++ List(newClass)
     }
 
+    def draw(parent: html.Element) {
+        for (c <- classes) {
+            c.layout.drawBlock(this, parent)
+        }
+        for (c: RdfClass <- classes) {
+            for (l: RdfProperty <- c.classProperties) {
+                l.draw(parent)
+            }
+        }
+    }
+
     def drawAllBlocks(parent: html.Element) {
         for (c <- classes) {
             c.layout.drawBlock(this, parent)
@@ -66,17 +74,5 @@ class RdfStructure (
     def addLine(newLineName: String, from: RdfClass, to: RdfClass) {
         val newLine = new RdfProperty(graph, newLineName, from, to)
         lines = lines ++ List(newLine)
-    }
-
-
-    @javascript("""console.log(str)""")
-    def log(str: Any) {}
-
-    def drawAllLines(parent: html.Element) {
-        for (c: RdfClass <- classes) {
-            for (l: RdfProperty <- c.classProperties) {
-                l.draw(parent)
-            }
-        }
     }
 }

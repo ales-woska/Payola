@@ -10,7 +10,8 @@ import s2js.compiler._
         TripleTableTransformator,
         IdentityTransformator,
         VisualTransformator,
-        RdfJsonTransformator
+        RdfJsonTransformator,
+        GraphVisualEditorTransformator
     )
 
     /**

@@ -3,7 +3,9 @@ package cz.payola.web.client.views.gve.loaders
 import cz.payola.common.rdf._
 import cz.payola.web.client.views.gve.data._
 import cz.payola.web.client.views.gve.layout._
-import s2js.compiler.javascript
+import s2js.compiler._
+import cz.payola.domain.rdf.Graph
+import cz.payola.web.shared.GVE
 
 object LayoutLoader {
 
@@ -102,6 +104,18 @@ object LayoutLoader {
         bs.head
     }
 
+    def getLayoutList: List[String] = {
+        GVE.setNamedGraph("woska.example.layout")
+        val test = GVE.getTest
+        val layoutList = GVE.select("*", "{?layout <layout.name> ?name}") {
+            success =>
+                val edges = layoutList.edges
+                log(edges)
+                edges
+        }
+        List("")
+    }
+
 
 
     val LAYOUT_TYPE = "gve:layoutType"
@@ -110,7 +124,8 @@ object LayoutLoader {
 
     def loadLayouts(url: String) {
 
-        val graph = new Graph(Nil, Nil, None);
+        // val graph = new Graph(Nil, Nil, None);
+        val graph: Graph = null
 
         val blockLayoutEdges = graph.edges.filter{e => e.uri == LAYOUT_TYPE && e.destination.toString == BLOCK_TYPE}
         var blockLayoutVertices:List[Vertex] = List()

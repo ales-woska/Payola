@@ -30,6 +30,11 @@ trait DataCubeModelComponent
                 new String(outputStream.toByteArray(), "UTF-8")
             }
 
+            def myTestQuery(query: String, uri: String): String = {
+                val result = rdfStorage.executeSPARQLQueryJena(query, uri)
+                datasetToJson(result)
+            }
+
             private def cubeQuery(evaluationId: String, query: String): com.hp.hpl.jena.query.Dataset = {
                 rdfStorage.executeSPARQLQueryJena(query, "http://" + evaluationId)
             }

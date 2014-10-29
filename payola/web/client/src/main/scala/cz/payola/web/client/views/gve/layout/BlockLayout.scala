@@ -14,6 +14,7 @@ import scala.collection.mutable.HashMap
 import org.w3c.dom.Attr
 import s2js.adapters.dom.Node
 import s2js.adapters.dom.Element
+import cz.payola.web.shared.GVE
 
 class BlockLayout(
     val forClass: String,
@@ -23,7 +24,7 @@ class BlockLayout(
     var verticalLines: String,
     var horizontalLines: String,
     var properties: List[Row])
-extends Layout() {
+extends GeneralLayout() {
 
     def this(forClass: String, title: String) = this(
         forClass,
@@ -37,6 +38,25 @@ extends Layout() {
 
     def this(forClass: String) = this(forClass, "")
     def this() = this("")
+
+    def store(graph: String, layout: Layout) = {
+        val data = List(forClass + " gve:layout " + layout.getName,
+            forClass + " gve:titleType " + this.titleTypes,
+            forClass + " gve:left " + this.left,
+            forClass + " gve:top " + this.top,
+            forClass + " gve:width " + this.width,
+            forClass + " gve:fontColor " + this.fontColor,
+            forClass + " gve:fontSize " + this.fontSize,
+            forClass + " gve:lineColor " + this.lineColor,
+            forClass + " gve:lineType " + this.lineType,
+            forClass + " gve:lineThickness " + this.lineThickness,
+            forClass + " gve:title " + this.title,
+            forClass + " gve:background " + this.background,
+            forClass + " gve:height " + this.height,
+            forClass + " gve:verticalLines " + this.verticalLines,
+            forClass + " gve:horizontalLines " + this.horizontalLines)
+        GVE.insert(graph, data)
+    }
 
     def getRow(id: String): Row = {
         val rows = properties.filter {p => p.getPropertyName == id}

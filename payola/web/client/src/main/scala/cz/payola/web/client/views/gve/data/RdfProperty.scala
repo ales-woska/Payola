@@ -12,7 +12,7 @@ class RdfProperty(
     val from: RdfClass,
     val to: RdfClass) {
 
-    var layout: LineLayout = new LineLayout("", "")
+    var layout: LineLayout = new LineLayout("", "", "")
 
     def setLayout(lineLayout: LineLayout) {
         this.layout = lineLayout

@@ -1,28 +1,28 @@
 package cz.payola.web.client.views.gve.layout
 
-import cz.payola.common.rdf.Edge
+import cz.payola.web.shared.GVE
 
-abstract class Layout(
-    var titleTypes: List[String] = List(),
-    var left: Int,
-    var top: Int,
-    var width: Int,
-    var fontColor: String,
-    var fontSize: Int,
-    var lineColor: String,
-    var lineType: String,
-    var lineThickness: Int)
-{
+class Layout(
+        name: String,
+        uri: String,
+        blockLayouts: List[BlockLayout] = List(),
+        lineLayouts: List[LineLayout] = List()) {
 
-    def this() = this(
-        defaultLayout.titleTypes,
-        defaultLayout.left,
-        defaultLayout.top,
-        defaultLayout.width,
-        defaultLayout.fontColor,
-        defaultLayout.fontSize,
-        defaultLayout.lineColor,
-        defaultLayout.lineType,
-        defaultLayout.lineThickness
-    )
+    def getName: String = name
+    def getUri: String = uri
+
+    def load = {
+        val blockLayouts = GVE.select(List("?layout"), "{?layout gve:Layout " + uri + " ; ?layout gve:layoutType \"gve:Block\"}")
+        val lineLayouts = GVE.select(List("?layout"), "{?layout gve:Layout " + uri + " ; ?layout gve:layoutType \"gve:Line\"}")
+    }
+
+    def store(graph: String) = {
+        GVE.insert(graph, uri + " gve:layoutName " + name)
+        for (block: BlockLayout <- blockLayouts) {
+            block.store(graph, this)
+        }
+        for (line: LineLayout <- lineLayouts) {
+            line.store(graph, this)
+        }
+    }
 }

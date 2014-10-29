@@ -169,7 +169,6 @@ class TripleTablePluginView(prefixApplier: Option[PrefixApplier]) extends TableP
         success: () => Unit, fail: () => Unit) {
 
         TripleTableTransformator.getSampleGraph(evaluationId) { sample =>
-        //TripleTableTransformator.getClass.getName does not work after s2js
             if(sample.isEmpty && availableTransformators.exists(_.contains("TripleTableTransformator"))) {
                 success()
             } else {
@@ -184,7 +183,7 @@ class TripleTablePluginView(prefixApplier: Option[PrefixApplier]) extends TableP
     }
 
     override def loadDefaultCachedGraph(evaluationId: String, updateGraph: Option[Graph] => Unit) {
-        TripleTableTransformator.getCachedPage(evaluationId, currentPage, allowedLinesOnPage)
+        TripleTableTransformator.getCachedPage(evaluationId)
         { pageOfGraph =>
             updateGraph(pageOfGraph)
         }
