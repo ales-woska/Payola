@@ -22,7 +22,7 @@ import cz.payola.web.client.views.map.facets.GroupingMapFacet
 import cz.payola.web.client.views.graph.empty.EmptyPluginView
 import cz.payola.web.client.util.UriHashTools
 import cz.payola.web.client.views.d3.packLayout._
-import cz.payola.web.client.views.datacube.DataCubeVisualizer
+import cz.payola.web.client.views.datacube.{ClientDataCubeVisualizer, DataCubeVisualizer}
 import cz.payola.web.client.views.gve.GraphVisualEditorView
 
 class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[String] = None, analysisId: Option[String]) extends GraphView with ComposedView
@@ -74,7 +74,7 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
         new ColumnChartPluginView(Some(prefixApplier)),
         new GraphSigmaPluginView(Some(prefixApplier)),
         new TimeHeatmap(Some(prefixApplier)),
-        new Generic(Some(prefixApplier)),
+        //new Generic(Some(prefixApplier)),
         new GoogleMapView(Some(prefixApplier)),
         new GoogleHeatMapView(Some(prefixApplier)),
         new ArcGisMapView(Some(prefixApplier)),
@@ -82,6 +82,9 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
         new Sunburst(Some(prefixApplier)),
         new ZoomableSunburst(Some(prefixApplier)),
         new ZoomableTreemap(Some(prefixApplier)),
+        new ForceDirectGraph(Some(prefixApplier)),
+        new TimelinePluginView(Some(prefixApplier)),
+        new ClientDataCubeVisualizer(Some(prefixApplier)),
         new DataCubeVisualizer(Some(prefixApplier)),
         new GraphVisualEditorView(Some(prefixApplier))
     )
