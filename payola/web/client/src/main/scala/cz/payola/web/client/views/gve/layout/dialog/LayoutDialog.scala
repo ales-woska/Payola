@@ -1,13 +1,8 @@
-package cz.payola.web.client.views.gve.loaders
+package cz.payola.web.client.views.gve.layout.dialog
 
-import cz.payola.common.entities.Analysis
 import cz.payola.web.client.views.bootstrap._
-import cz.payola.web.client.views.elements.Div
-import cz.payola.web.client.views.elements._
+import cz.payola.web.client.views.elements.{Div, _}
 import cz.payola.web.client.views.elements.form.fields.TextInput
-import cz.payola.web.client.views.entity.analysis.ReadOnlyAnalysisVisualizer
-import s2js.adapters.browser._
-import s2js.adapters.html
 
 class LayoutDialog() extends Modal("Load layout") {
 

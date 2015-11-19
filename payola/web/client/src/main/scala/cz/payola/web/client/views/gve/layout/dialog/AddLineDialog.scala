@@ -1,11 +1,10 @@
-package cz.payola.web.client.views.gve.loaders
+package cz.payola.web.client.views.gve.layout.dialog
 
 import cz.payola.common.visual.Color
-import cz.payola.web.client.View
+import cz.payola.web.client.events._
 import cz.payola.web.client.views.bootstrap._
 import cz.payola.web.client.views.elements._
 import cz.payola.web.client.views.elements.form.fields._
-import cz.payola.web.client.events._
 import cz.payola.web.client.views.gve.layout.LineLayout
 
 class AddLineDialog(sender: EditLayoutDialog) extends Modal("Add Line")

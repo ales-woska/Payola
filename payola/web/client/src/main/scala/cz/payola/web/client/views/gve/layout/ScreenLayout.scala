@@ -2,7 +2,7 @@ package cz.payola.web.client.views.gve.layout
 
 import cz.payola.web.shared.GVE
 
-class Layout(
+class ScreenLayout(
         name: String,
         uri: String,
         blockLayouts: List[BlockLayout] = List(),
@@ -11,9 +11,9 @@ class Layout(
     def getName: String = name
     def getUri: String = uri
 
-    def load = {
-        val blockLayouts = GVE.select(List("?layout"), "{?layout gve:Layout " + uri + " ; ?layout gve:layoutType \"gve:Block\"}")
-        val lineLayouts = GVE.select(List("?layout"), "{?layout gve:Layout " + uri + " ; ?layout gve:layoutType \"gve:Line\"}")
+    def load() = {
+        //val blockLayouts = GVE.select(List("?layout"), "{?layout gve:Layout " + uri + " ; ?layout gve:layoutType \"gve:Block\"}")
+        //val lineLayouts = GVE.select(List("?layout"), "{?layout gve:Layout " + uri + " ; ?layout gve:layoutType \"gve:Line\"}")
     }
 
     def store(graph: String) = {
