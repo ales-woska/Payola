@@ -7,6 +7,8 @@ resolvers ++= Seq(
     Resolver.url("Play", url("http://download.playframework.org/ivy-releases/"))(Resolver.ivyStylePatterns)
 )
 
+resolvers += Resolver.url("bintray-sbt-plugins", url("https://dl.bintray.com/sbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
+
 //addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.1.0")
 
 addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.0.0")
@@ -16,6 +18,6 @@ addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.6.0")
 
 addSbtPlugin("play" % "sbt-plugin" % "2.1-09142012")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-start-script" % "0.9.0")
-
 libraryDependencies += "play" %% "play" % "2.1-09142012"
+
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "0.7.4")

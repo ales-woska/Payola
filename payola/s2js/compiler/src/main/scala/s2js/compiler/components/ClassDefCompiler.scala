@@ -656,9 +656,9 @@ abstract class ClassDefCompiler(val packageDefCompiler: PackageDefCompiler, val 
             realParameters = parameters.dropRight(2)
         }
         if (isSecured) {
-            if (realParameters.isEmpty) {
-                throw new ScalaToJsException("A secured remote method must have a security context as a parameter.")
-            }
+            //if (realParameters.isEmpty) {
+            //    throw new ScalaToJsException("A secured remote method must have a security context as a parameter.")
+            //}
             realParameters = realParameters.dropRight(1)
         }
 
