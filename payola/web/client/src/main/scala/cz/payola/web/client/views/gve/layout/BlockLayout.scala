@@ -39,8 +39,8 @@ extends GeneralLayout() {
     def this(forClass: String) = this(forClass, "")
     def this() = this("")
 
-    def store(graph: String, layout: Layout) = {
-        val data = List(forClass + " gve:layout " + layout.getName,
+    def store(graph: String, layout: ScreenLayout) = {
+        val data = List(forClass + " gve:layout XXX ",
             forClass + " gve:titleType " + this.titleTypes,
             forClass + " gve:left " + this.left,
             forClass + " gve:top " + this.top,

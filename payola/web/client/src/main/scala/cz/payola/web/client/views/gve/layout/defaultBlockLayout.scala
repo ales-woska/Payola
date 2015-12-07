@@ -1,5 +1,7 @@
 package cz.payola.web.client.views.gve.layout
 
+import cz.payola.web.client.views.gve.data.AggrFunctions
+
 object defaultBlockLayout {
     val background = "CCFF33"
     val height = 250

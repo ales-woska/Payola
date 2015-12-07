@@ -27,8 +27,8 @@ extends GeneralLayout {
 
 
 
-    def store(graph: String, layout: Layout) = {
-        var data = List(uri + " gve:layout " + layout.getName,
+    def store(graph: String, layout: ScreenLayout) = {
+        var data = List(uri + " gve:layout xxx ",
             uri + " gve:titleType " + this.titleTypes,
             uri + " gve:left " + this.left,
             uri + " gve:top " + this.top,

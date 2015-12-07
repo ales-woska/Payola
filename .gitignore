@@ -2,6 +2,7 @@
 target/
 logs/
 tmp/
+payola/projectFilesBackup/
 
 payola/lib/adapters_*.jar
 payola/lib/compiler_*.jar

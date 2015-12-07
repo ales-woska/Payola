@@ -10,10 +10,10 @@ import cz.payola.common.rdf._
 import cz.payola.web.shared.transformators.GraphVisualEditorTransformator
 import cz.payola.web.client.views.bootstrap.modals.FatalErrorModal
 import cz.payola.web.shared._
-import cz.payola.web.client.views.gve.layout._
 import cz.payola.web.client.views.bootstrap.Modal
+import cz.payola.web.client.views.gve.layout.dialog.LayoutDialog
 
-class GraphVisualEditorView(prefixApplier: scala.Option[PrefixApplier] = scala.None)
+class GraphVisualEditorView(prefixApplier: Option[PrefixApplier] = None)
     extends PluginView[cz.payola.common.rdf.Graph]("Graph Visual Editor", prefixApplier) {
 
     protected var pluginWrapper = getPluginWrapper

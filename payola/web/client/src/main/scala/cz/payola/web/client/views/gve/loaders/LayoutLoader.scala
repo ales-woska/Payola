@@ -107,12 +107,7 @@ object LayoutLoader {
     def getLayoutList: List[String] = {
         GVE.setNamedGraph("woska.example.layout")
         val test = GVE.getTest
-        val layoutList = GVE.select("*", "{?layout <layout.name> ?name}") {
-            success =>
-                val edges = layoutList.edges
-                log(edges)
-                edges
-        }
+        val layoutList = null
         List("")
     }
 

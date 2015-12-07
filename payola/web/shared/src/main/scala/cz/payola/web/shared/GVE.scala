@@ -30,9 +30,7 @@ import cz.payola.domain.rdf._
         (successCallback: (cz.payola.common.rdf.Graph => Unit))(failCallback: (Throwable => Unit)) {
 
         val rows: List[String] = List(row)
-        val ret:cz.payola.common.rdf.Graph = this.select(rows, constraints) {
-            success => ret
-        }
+        val ret:cz.payola.common.rdf.Graph = null
         successCallback(ret)
     }
 
