@@ -288,7 +288,9 @@ object PayolaBuild extends Build
 
             files.foreach { file =>
                 val path = file.toAbsolute.path.toString.replace("\\", "/")
-                val fileContent = Source.fromFile(path).getLines.mkString
+				System.out.println(path)
+                val fileContent = Source.fromFile(path)("ISO-8859-1").getLines().mkString
+				System.out.println(path)
 
                 provideRegex.findAllIn(fileContent).matchData.foreach {m =>
                     fileProvides.getOrElseUpdate(path, mutable.ArrayBuffer.empty[String]) += m.group(1)
