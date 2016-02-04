@@ -70,7 +70,7 @@ class AddBlockDialog(sender: EditLayoutDialog) extends Modal("Add Block")
         color = vLineColorInput.field.value.get
         val verticalLine = vLineThicknessInput.field.value + "px " + vLineTypeInput.field.value + " " + color.toString
 
-        val properties = List(new Row(propertyUrlInput.value, List(propertyTitleTypeInput.field.value), propertyTitle.value, propertyAggrFuncInput.field.value))
+        val properties = List(new RowLayout(propertyUrlInput.value, List(propertyTitleTypeInput.field.value), propertyTitle.value, propertyAggrFuncInput.field.value))
 
         color = fillColorInput.field.value.get
         val newBlock: BlockLayout = new BlockLayout(

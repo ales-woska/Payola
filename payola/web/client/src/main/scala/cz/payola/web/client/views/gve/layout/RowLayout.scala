@@ -1,15 +1,10 @@
 package cz.payola.web.client.views.gve.layout
 
-import s2js.adapters.html
-import s2js.adapters.browser._
-import cz.payola.web.client.views.elements._
-import cz.payola.web.client.views.ElementView
-
-class Row (
+class RowLayout (
     val propertyName: String,
-    val titleType: List[String],
+    val titleType: List[TitleType],
     val titleResource: String,
-    val aggregateFunction: String) {
+    val aggregateFunctions: List[AggregateFunction]) {
 
     def this(
         rowName: String,
@@ -21,12 +16,13 @@ class Row (
 
     def getTitle: String = {
         var returnTitle: String = ""
-        for (t:String <- titleType) {
+        for (t:TitleType <- titleType) {
             if (returnTitle == "")
             {
                 returnTitle = t match {
-                    case "url" => propertyName
-                    case "constant" => titleResource
+                    case URL => propertyName
+                    case PROPERTY => propertyName
+                    case CONSTANT => titleResource
                     case _ => ""
                 }
             }
@@ -35,18 +31,25 @@ class Row (
     }
 
     def getValue(properties: List[String]): String = {
-        if (properties.size == 1) properties.head
-        else {
-            this.aggregateFunction match {
-                case "max" => max(properties)
-                case "min" => min(properties)
-                case "avg" => avg(properties)
-                case "nothing" => flatten(properties)
+        if (properties.size == 1) {
+            properties.head
+        } else {
+            var returnValue: String = ""
+            for (a: AggregateFunction <- aggregateFunctions) {
+                if (returnValue == "") {
+                    returnValue = a match {
+                        case MAX => max(properties)
+                        case MIN => min(properties)
+                        case AVG => avg(properties)
+                        case NOTHING => flatten(properties)
+                    }
+                }
             }
+            returnValue
         }
     }
 
-    private def max(strings: List[String]) = {
+    private def max(strings: List[String]): String = {
         var max: Int = Integer.MIN_VALUE
         for (s:String <- strings) {
             val i: Int = s.toInt
@@ -55,7 +58,7 @@ class Row (
         max.toString
     }
 
-    private def min(strings: List[String]) = {
+    private def min(strings: List[String]): String = {
         var min: Int = Integer.MAX_VALUE
         for (s:String <- strings) {
             val i: Int = s.toInt
@@ -64,7 +67,7 @@ class Row (
         min.toString
     }
 
-    private def avg(strings: List[String]) = {
+    private def avg(strings: List[String]): String = {
         var sum: Long = 0
         for (s:String <- strings) {
             val i: Int = s.toInt
@@ -73,7 +76,7 @@ class Row (
         (sum/strings.length).toString
     }
 
-    private def flatten(strings: List[String]) = {
+    private def flatten(strings: List[String]): String = {
         var returns: String = strings.head
         for (s <- strings if s != strings.head) {
             returns += " " + s

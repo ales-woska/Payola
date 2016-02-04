@@ -438,8 +438,8 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
      * Additionally if preferredPlugin is available (transformator is available and the plugin can process
      * the transformation result), the pluginSwitchView switches to it.
      * @param availableTransformations
-     * @param evaluationId
-     * @param preferedPlugin
+     * @param evaluationId zxcvx
+     * @param preferedPlugin xvx
      */
     def setAvailablePlugins(availableTransformations: List[String], preferredPlugin: String) {
 

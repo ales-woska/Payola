@@ -3,6 +3,7 @@ package cz.payola.web.client.views.gve.loaders
 import cz.payola.common.rdf._
 import cz.payola.web.client.views.gve.data._
 import cz.payola.web.client.views.gve.layout._
+import s2js.adapters.html
 import s2js.compiler._
 import cz.payola.domain.rdf.Graph
 import cz.payola.web.shared.GVE
@@ -35,7 +36,7 @@ object LayoutLoader {
         country.left = 980
         country.top = 10
         country.properties = List(
-            new Row("http://dbpedia.org/ontology/areaTotal", List("constant"), "Area", "nothing"))
+            new RowLayout("http://dbpedia.org/ontology/areaTotal", List("constant"), "Area", "nothing"))
         country.horizontalLines = "1px solid gray"
         country.verticalLines = "1px solid silver"
         country.titleTypes = List[String]("constant")
@@ -51,8 +52,8 @@ object LayoutLoader {
         city.left = 10
         city.top = 10
         city.properties = List(
-            new Row("http://dbpedia.org/ontology/populationTotal", List("constant"), "Population", "nothing"),
-            new Row("http://dbpedia.org/ontology/populationDensity", List("constant"), "Density", "nothing"))
+            new RowLayout("http://dbpedia.org/ontology/populationTotal", List("constant"), "Population", "nothing"),
+            new RowLayout("http://dbpedia.org/ontology/populationDensity", List("constant"), "Density", "nothing"))
         city.horizontalLines = "1px solid gray"
         city.verticalLines = "1px solid silver"
         city.titleTypes = List[String]("constant")
@@ -75,11 +76,11 @@ object LayoutLoader {
         loaded = true
     }
 
-    def assignLayouts(dataStructure: RdfStructure) = {
-        for (c: RdfClass <- dataStructure.classes) {
+    def assignLayouts(dataStructure: DataModel) = {
+        for (c: RdfObject <- dataStructure.classes) {
             c.setLayout(getBlockLayout(c.URI))
 
-            for (l: RdfProperty <- c.classProperties) {
+            for (l: RdfProperty <- c.literalProperties) {
                 val layout = getLineLayout(l)
                 l.setLayout(layout)
             }
@@ -99,8 +100,8 @@ object LayoutLoader {
     @javascript("""console.log(str)""")
     def log(str: Any) {}
 
-    def getLineLayout(property: RdfProperty): LineLayout = {
-        val bs = lineLayouts.filter(l => l.fromClass == property.from.URI && l.toClass == property.to.URI)
+    def getLineLayout(property: RdfObjectProperty): LineLayout = {
+        val bs = lineLayouts.filter(l => l.fromClass == property.subject.URI && l.toClass == property.property.URI)
         bs.head
     }
 
@@ -109,6 +110,90 @@ object LayoutLoader {
         val test = GVE.getTest
         val layoutList = null
         List("")
+    }
+
+    def constructDataStructure() = {
+        // find all classes
+        val typeOfEdges = graph.edges.filter{e => e.uri == Edge.rdfTypeEdge}
+        var classes = List[String]()
+        for (e:Edge <- typeOfEdges) {
+            val classUri = e.destination.toString
+            if (classes.contains(classUri) == false) {
+                classes = classes ++ List(classUri)
+            }
+        }
+
+        // create founded classes
+        for (c <- classes) {
+            addClass(c)
+        }
+
+        for (c: RdfObject <- this.classes) {
+            c.connectClasses(this)
+        }
+    }
+
+    def getClass(name: String): RdfObject = {
+        var returnClass: RdfObject = null
+        for (c: RdfObject <- this.classes) {
+            if (c.URI == name) {
+                returnClass = c
+            }
+        }
+        returnClass
+    }
+
+    def addClass(newClassName: String) {
+        val newClass = new RdfObject(newClassName)
+        classes = classes ++ List(newClass)
+    }
+
+    def draw(parent: html.Element) {
+        for (c <- classes) {
+            c.layout.drawBlock(this, parent)
+        }
+        for (c: RdfObject <- classes) {
+            for (l: RdfProperty <- c.literalProperties) {
+                l.draw(parent)
+            }
+        }
+    }
+
+    for (e <- graph.edges.filter{e:Edge => e.uri == Edge.rdfTypeEdge && e.destination.toString == URI}) {
+        val origin: Vertex = e.origin
+        val newLine = new RdfObjectProperty(e.origin.uri, e.destination.toString)
+
+        val connectedEdges = graph.getOutgoingEdges(origin)
+
+        for (propertyEdge: Edge <- connectedEdges) {
+            val propertyVertex = propertyEdge.destination
+
+            propertyVertex match {
+                case l: LiteralVertex => newLine.valueProperties.put(propertyEdge.uri, propertyVertex.toString)
+                case i: IdentifiedVertex => {
+                    val propertyVertexEdges = graph.getOutgoingEdges(propertyVertex)
+                    val propertyVertexTypes = propertyVertexEdges.filter{e: Edge => e.uri == Edge.rdfTypeEdge}
+                    if (propertyVertexTypes.size > 0) {
+                        val propertyType = propertyVertexTypes.head.destination.toString
+                        if (classPropertiesUris.contains(propertyEdge.uri) == false) {
+                            classPropertiesUris = classPropertiesUris ++ List(propertyEdge.uri)
+                            classPropertiesClassTypes.put(propertyEdge.uri, propertyType)
+                        }
+                    }
+                    true
+                }
+            }
+        }
+
+        lines = lines ++ List(newLine)
+    }
+
+    def connectClasses(structure: DataModel) = {
+        for (propertyUri <- classPropertiesUris) {
+            val connectedClassType: String = classPropertiesClassTypes.getOrElse(propertyUri, "-")
+            val property = new RdfProperty(graph, propertyUri, this, structure.getClass(connectedClassType))
+            literalProperties = literalProperties ++ List(property)
+        }
     }
 
 

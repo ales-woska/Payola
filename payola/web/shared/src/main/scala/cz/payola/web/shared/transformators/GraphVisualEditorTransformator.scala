@@ -8,6 +8,8 @@ import cz.payola.common.rdf._
 
 @remote object GraphVisualEditorTransformator extends GraphTransformator {
 
+    final val NAME = "GraphVisualEditorTransformator"
+
     @async
     def transform(evaluationId: String)(successCallback: Option[Graph] => Unit)(errorCallback: Throwable => Unit) {
         successCallback(getGraphPage(evaluationId))
