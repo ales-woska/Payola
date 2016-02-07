@@ -1,12 +1,13 @@
 package cz.payola.web.client.views.gve
 
+import cz.payola.web.client.View
 import cz.payola.web.client.views.graph.PluginView
 import cz.payola.web.client.models.PrefixApplier
 import cz.payola.web.client.views.elements._
 import cz.payola.web.client.views.gve.data.DataModel
-import cz.payola.web.client.views.gve.layout.{LineLayout, BlockLayout, ScreenLayout}
+import cz.payola.web.client.views.gve.layout.ScreenLayout
 import cz.payola.web.client.views.gve.loaders._
-import cz.payola.web.client.views.gve.render.{RdfPredicateRenderer, RdfSubjectRenderer}
+import cz.payola.web.client.views.gve.render.PluginRenderer
 import s2js.adapters.html
 import s2js.compiler._
 import cz.payola.common.rdf._
@@ -35,7 +36,7 @@ class GraphVisualEditorView(prefixApplier: Option[PrefixApplier] = None)
         }
         { error =>
             fail()
-            val modal = new FatalErrorModal(error.toString())
+            val modal = new FatalErrorModal(error.toString)
             modal.render()
         }
     }
@@ -45,35 +46,31 @@ class GraphVisualEditorView(prefixApplier: Option[PrefixApplier] = None)
             pageOfGraph => updateGraph(pageOfGraph)
         } {
             error =>
-                val modal = new FatalErrorModal(error.toString())
+                val modal = new FatalErrorModal(error.toString)
                 modal.render()
         }
     }
 
     override def updateGraph(graph: Option[Graph], contractLiterals: Boolean = true) {
-
-        if (!LayoutLoader.isLoaded) {
-            val dialog = new LayoutDialog()
-            dialog.render()
-            val pluginWrapper = getPluginWrapper
-            dialog.confirming += { x =>
-                if (dialog.urlField.field.value == "") {
-                    val alertBox = new Modal("URL field is empty")
-                    alertBox.render(pluginWrapper.htmlElement)
-                    dialog.destroy()
-                    false
-                } else {
-                    GVE.setUri(dialog.urlField.field.value)
-                    LayoutLoader.loadLayouts(dialog.urlField.field.value)
-                    if (dialog.graphField.field.value != "") {
-                        GVE.setNamedGraph(dialog.graphField.field.value)
-                    }
-                    LayoutLoader.loaded = true
-                    pluginWrapper.removeAllChildNodes()
-                    this.render(graph.get, pluginWrapper)
-                    super.updateGraph(graph, contractLiterals = true)
-                    true
+        val dialog = new LayoutDialog()
+        dialog.render()
+        val pluginWrapper = getPluginWrapper
+        dialog.confirming += { x =>
+            if (dialog.urlField.field.value == "") {
+                val alertBox = new Modal("URL field is empty")
+                alertBox.render(pluginWrapper.htmlElement)
+                dialog.destroy()
+                false
+            } else {
+                GVE.setUri(dialog.urlField.field.value)
+                LayoutLoader.loadLayouts(dialog.urlField.field.value)
+                if (dialog.graphField.field.value != "") {
+                    GVE.setNamedGraph(dialog.graphField.field.value)
                 }
+                pluginWrapper.removeAllChildNodes()
+                this.render(graph.get, pluginWrapper)
+                super.updateGraph(graph, contractLiterals = true)
+                true
             }
         }
     }
@@ -89,22 +86,9 @@ class GraphVisualEditorView(prefixApplier: Option[PrefixApplier] = None)
         pluginWrapper.htmlElement.appendChild(pluginWorkArea)
 
         val dataModel: DataModel = RdfDataLoader.constructDataStructure(graph)
-
-        LayoutLoader.createDemoLayouts()
-        val test: ScreenLayout = new ScreenLayout("Test Layout", "test.woska.layout", List(), List())
-        //test.blockLayouts = GVE.select(List("?layout"), "{?layout gve:Layout " + uri + " ; ?layout gve:layoutType \"gve:Block\"}")
-        //test.lineLayouts = GVE.select(List("?layout"), "{?layout gve:Layout " + uri + " ; ?layout gve:layoutType \"gve:Line\"}")
-        LayoutLoader.assignLayouts(dataModel)
+        val layout: ScreenLayout = LayoutLoader.loadLayout()
         pluginWrapper.htmlElement.appendChild(createLayoutButton(graph))
-
-        for (c:BlockLayout <- test.getBlockLayouts) {
-            val blockRenderer = new RdfSubjectRenderer(graph, rdfStructure.getRdfSubjectByUri(c.forClass), c)
-            blockRenderer.render(pluginWrapper.htmlElement)
-        }
-        for (c:LineLayout <- test.getLineLayouts) {
-            val blockRenderer = new RdfPredicateRenderer(graph, rdfStructure.getRdfPredicateByUri(c.fromClass), c)
-            blockRenderer.render(pluginWrapper.htmlElement)
-        }
+        PluginRenderer.render(pluginWrapper.htmlElement, dataModel, layout)
     }
 
     private def createLayoutButton(graph: Graph): html.Element = {
@@ -115,7 +99,6 @@ class GraphVisualEditorView(prefixApplier: Option[PrefixApplier] = None)
             dialog.render()
             dialog.confirming += { x =>
                 LayoutLoader.loadLayouts(dialog.urlField.field.value)
-                LayoutLoader.loaded = true
                 render(graph, getPluginWrapper)
                 true
             }
@@ -133,4 +116,13 @@ class GraphVisualEditorView(prefixApplier: Option[PrefixApplier] = None)
 
     @javascript("""console.log(str)""")
     def log(str: Any) {}
+
+    /**
+      * Construction of child View objects that are rendered with this View object.
+      *
+      * @return Child View objects
+      */
+    override def createSubViews: Seq[View] = {
+        Seq(getPluginWrapper)
+    }
 }

@@ -1,6 +1,5 @@
 package cz.payola.web.client.views.gve.render
 
-import cz.payola.common.rdf._
 import cz.payola.web.client.views.ElementView
 import cz.payola.web.client.views.elements.form.fields.TextInput
 import cz.payola.web.client.views.elements.{TableRow, TableHeadCell, Text, Div}
@@ -10,57 +9,48 @@ import s2js.adapters.dom.Node
 import s2js.adapters.html
 import s2js.compiler.javascript
 import cz.payola.web.client.views.gve.data._
-import scala.collection.mutable.HashMap
+import scala.collection.mutable
+import cz.payola.common.rdf._
 
-class RdfSubjectRenderer(
-    var graph: Graph,
-    var rdfSubject: RdfObject,
-    var blockLayout: BlockLayout) extends RdfRenderer {
+object RdfSubjectRenderer {
 
     private final val HEADER_INPUT_STYLE: String = "width: 30px; font-size: 9px; height: 9px;"
 
-    private val filters: HashMap[Int, String] = new HashMap[Int, String]()
+    private val filters: mutable.HashMap[Int, String] = new mutable.HashMap[Int, String]()
 
-    override def render(element: html.Element): Unit = {
-        this.drawBlock(element)
-    }
-
-    def drawBlock(element: html.Element) {
+    def render(graph: Graph, element: html.Element, rdfSubject: RdfObject, blockLayout: BlockLayout): Unit = {
         val classBlockElement = document.createElement[html.Element]("div")
-        classBlockElement.setAttribute("style", getDivStyle)
+        classBlockElement.setAttribute("style", getDivStyle(blockLayout))
 
         val classTitleElement = document.createElement[html.Element]("h3")
         classTitleElement.setAttribute("style", getTableHeadStyle)
-        classTitleElement.innerHTML = getTitle()
+        classTitleElement.innerHTML = getTitle(rdfSubject, blockLayout)
         classBlockElement.appendChild(classTitleElement)
 
-        val table = generateTable()
+        val table = generateTable(graph, rdfSubject, blockLayout)
         classBlockElement.appendChild(table)
         element.appendChild(classBlockElement)
     }
 
-    @javascript("""console.log(str)""")
-    def log(str: Any) {}
-
-    def getTitle(): String = {
+    def getTitle(rdfSubject: RdfObject, blockLayout: BlockLayout): String = {
         var title = ""
         for (t: TitleType <- blockLayout.titleTypes) {
             if (title == "") {
                 title = t match {
-                    case URL => rdfSubject.URI
+                    case URL => rdfSubject.objectURI
                     case LABEL => blockLayout.titleSouce
                     case CONSTANT => blockLayout.title
                     case PROPERTY => blockLayout.getRowLayout(blockLayout.titleSouce).getTitle
-                    case _ => rdfSubject.URI
+                    case _ => rdfSubject.objectURI
                 }
             }
         }
         title
     }
 
-    def generateTable() = {
+    def generateTable(graph: Graph, rdfSubject: RdfObject, blockLayout: BlockLayout) = {
         val classLinesElement = document.createElement[html.Element]("table")
-        classLinesElement.setAttribute("style", getTableStyle)
+        classLinesElement.setAttribute("style", getTableStyle(blockLayout))
 
         val linesTitlesElement = document.createElement[html.Element]("tr")
 
@@ -68,7 +58,7 @@ class RdfSubjectRenderer(
         // val createDataCubePluginClicked = new SimpleUnitEvent[PluginDialog]
         val headerCellText = new Div(List(new Text("URI")))
         headerCellText.mouseClicked += { e =>
-            sortByTitle(headerCellText)
+            sortByTitle(graph, rdfSubject, blockLayout, headerCellText)
             false
         }
         val headerInput = new TextInput("textFilter", filters.getOrElse(0, ""), "Filter", "form-control input-sm col-xs-2")
@@ -86,9 +76,9 @@ class RdfSubjectRenderer(
 
         var i = 1
         for (r: RdfProperty <- rdfSubject.literalProperties) {
-            val headerCellText = new Div(List(new Text(r.uri)))
+            val headerCellText = new Div(List(new Text(r.propertyURI)))
             headerCellText.mouseClicked += { e =>
-                sortByTitle(headerCellText)
+                sortByTitle(graph, rdfSubject, blockLayout, headerCellText)
                 false
             }
             val headerInput = new TextInput("textFilter", filters.getOrElse(i, ""), "Filter")
@@ -106,23 +96,23 @@ class RdfSubjectRenderer(
         }
         classLinesElement.appendChild(linesTitlesElement)
 
-        for (line: RdfObjectProperty <- rdfSubject.literalProperties) {
+        for (line <- rdfSubject.objectProperties) {
             val lineView = new TableRow(List())
             lineView.mouseClicked += { e =>
-                this.filterLinked(line, lineView)
+                this.filterLinked(graph, rdfSubject, line, lineView)
                 false
             }
             val lineElement = lineView.htmlElement
 
             val lineValueElement = document.createElement[html.Element]("td")
-            lineValueElement.setAttribute("style", getTdStyle)
-            lineValueElement.innerHTML = line.uri
+            lineValueElement.setAttribute("style", getTdStyle(blockLayout))
+            lineValueElement.innerHTML = line.propertyUri
             lineElement.appendChild(lineValueElement)
 
-            for (property: RowLayout <- properties) {
+            for (property: RowLayout <- blockLayout) {
                 val lineValueElement = document.createElement[html.Element]("td")
-                lineValueElement.setAttribute("style", getTdStyle)
-                lineValueElement.innerHTML = line.valueProperties.getOrElse(property.propertyName, "-")
+                lineValueElement.setAttribute("style", getTdStyle(blockLayout))
+                lineValueElement.innerHTML = property.propertyName
                 lineElement.appendChild(lineValueElement)
             }
             classLinesElement.appendChild(lineElement)
@@ -130,37 +120,43 @@ class RdfSubjectRenderer(
         classLinesElement
     }
 
-    def getRightLimit = blockLayout.left + blockLayout.width + 2
+    def getRightLimit(blockLayout: BlockLayout) = blockLayout.left + blockLayout.width + 2
 
-    def getLeftLimit = blockLayout.left
+    def getLeftLimit(blockLayout: BlockLayout) = blockLayout.left
 
-    def getTopLimit = blockLayout.top
+    def getTopLimit(blockLayout: BlockLayout) = blockLayout.top
 
-    def getBottomtLimit = blockLayout.top + blockLayout.height + 2
+    def getBottomtLimit(blockLayout: BlockLayout) = blockLayout.top + blockLayout.height + 2
 
-    def getDivStyle = "float: left; " +
+    def getDivStyle(blockLayout: BlockLayout) = {
+        "float: left; " +
         "position: absolute; " +
         "z-index: 2; " +
         "background-color: " + blockLayout.background + "; " +
         "border: " + blockLayout.lineThickness + "px " + blockLayout.lineType + " " + blockLayout.lineColor + "; " +
         "left:" + blockLayout.left + "px;" +
         "top: " + blockLayout.top + "px; "
+    }
 
-    def getTableStyle = "height: " + blockLayout.height + "px; " +
+    def getTableStyle(blockLayout: BlockLayout) = {
+        "height: " + blockLayout.height + "px; " +
         "width: " + blockLayout.width + "px; " +
         "display: block; " +
         "overflow-y: scroll; " +
         "padding: 10px;"
+    }
 
     def getTableHeadStyle = "font-size: large; font-weight: bold; padding: 5px; text-align: center;"
 
-    def getTdStyle = "border-bottom: " + blockLayout.horizontalLines + "; border-right: " + blockLayout.verticalLines + ";"
+    def getTdStyle(blockLayout: BlockLayout) = {
+        "border-bottom: " + blockLayout.horizontalLines + "; border-right: " + blockLayout.verticalLines + ";"
+    }
 
     @javascript("""console.log(str)""")
     def log(str: Any) {}
 
     var desc = true
-    def sortByTitle(sender: ElementView[html.Element]) {
+    def sortByTitle(graph: Graph, rdfSubject: RdfObject, blockLayout: BlockLayout, sender: ElementView[html.Element]) {
         val clickedTh = sender.htmlElement.parentNode
 
         var pos = 0
@@ -175,12 +171,12 @@ class RdfSubjectRenderer(
 
         if (pos == 0) {
             if (desc) {
-                orderedList = rdfSubject.literalProperties.sortWith((a, b) => compareStrings(a.uri, b.uri))
+                orderedList = rdfSubject.literalProperties.sortWith((a, b) => compareStrings(a.propertyURI, b.propertyURI))
             } else {
-                orderedList = rdfSubject.literalProperties.sortWith((a, b) => compareStringsDesc(b.uri, a.uri))
+                orderedList = rdfSubject.literalProperties.sortWith((a, b) => compareStringsDesc(b.propertyURI, a.propertyURI))
             }
         } else {
-            val propertyName = rdfSubject.literalProperties(pos - 1).uri
+//            val propertyName = rdfSubject.literalProperties(pos - 1).propertyURI
 //            if (desc) {
 //                orderedList = rdfSubject.literalProperties.sortWith((a, b) => {
 //                    val paS = a.valueProperties.getOrElse(propertyName, "-")
@@ -215,7 +211,7 @@ class RdfSubjectRenderer(
         desc = !desc
         rdfSubject.literalProperties = orderedList
         val tableNode = sender.htmlElement.parentNode.parentNode.parentNode
-        val newTableNode = generateTable()
+        val newTableNode = generateTable(graph, rdfSubject, blockLayout)
         hideLines(newTableNode)
         tableNode.parentNode.replaceChild(newTableNode, tableNode.parentNode.lastChild)
     }
@@ -286,12 +282,12 @@ class RdfSubjectRenderer(
     @javascript(""" n.style.background = v; """)
     def setAttribute(n: Node, v: String) {}
 
-    def filterLinked(line: RdfObjectProperty, sender: TableRow) {
+    def filterLinked(graph: Graph, rdfSubject: RdfObject, line: RdfObjectProperty, sender: TableRow) {
 
         for (property: RdfObjectProperty <- rdfSubject.objectProperties) {
-//            val correctEdges = rdfSubject.graph.getOutgoingEdges(line.URI).filter{e => e.uri.toLowerCase == property.to.URI.toLowerCase}
+//            val correctEdges = graph.getOutgoingEdges(line.propertyUri).filter{e => e.uri.toLowerCase == property.property.objectURI.toLowerCase}
 //            for (e <- correctEdges) {
-//                property.to.layout.filters.put(0, e.destination.toString)
+//                property.property.layout.filters.put(0, e.destination.toString)
 //            }
 //            property.
 //

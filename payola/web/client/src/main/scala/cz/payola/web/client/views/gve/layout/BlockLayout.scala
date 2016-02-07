@@ -40,6 +40,6 @@ class BlockLayout(
                 return r
             }
         }
-        return null
+        null
     }
 }

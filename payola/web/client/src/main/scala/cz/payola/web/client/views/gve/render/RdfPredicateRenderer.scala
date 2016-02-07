@@ -7,23 +7,17 @@ import s2js.adapters.browser.`package`._
 import s2js.adapters.html
 import s2js.adapters.html.Element
 
-class RdfPredicateRenderer (
-    var graph: Graph = null,
-    var rdfPredicate: RdfObjectProperty = null,
-    var layout: LineLayout = null) extends RdfRenderer {
+object RdfPredicateRenderer {
 
-    override def render(element: Element): Unit = {
-        this.drawLine(element)
-    }
-
-    def drawLine(parent: Element) {
+    def render(element: Element, layout: LineLayout): Unit = {
         val div = document.createElement[html.Element]("div")
         div.innerHTML = layout.title
-        div.setAttribute("style", getStyle)
-        parent.appendChild(div)
+        div.setAttribute("style", getStyle(layout))
+        element.appendChild(div)
     }
 
-    def getStyle = "z-index: 1; " +
+    def getStyle(layout: LineLayout) = {
+        "z-index: 1; " +
         "position: absolute; " +
         "height: auto; " +
         "text-align: center; " +
@@ -33,4 +27,5 @@ class RdfPredicateRenderer (
         "border-bottom: " + layout.lineThickness + "px " + layout.lineType + " " + layout.lineColor + ";" +
         "font-size: " + layout.fontSize + "px;" +
         "color: " + layout.fontColor + ";"
+    }
 }
