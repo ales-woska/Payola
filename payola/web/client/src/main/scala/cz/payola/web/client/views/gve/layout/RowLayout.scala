@@ -6,23 +6,15 @@ class RowLayout (
     val titleResource: String,
     val aggregateFunctions: List[AggregateFunction]) {
 
-    def this(
-        rowName: String,
-        titleType: String,
-        titleResource: String,
-        aggregateFunction: String) = this(rowName, List(titleType), titleResource, aggregateFunction)
-
-    def getPropertyName: String = propertyName
-
     def getTitle: String = {
         var returnTitle: String = ""
         for (t:TitleType <- titleType) {
             if (returnTitle == "")
             {
                 returnTitle = t match {
-                    case URL => propertyName
-                    case PROPERTY => propertyName
-                    case CONSTANT => titleResource
+                    case TitleType.URL => propertyName
+                    case TitleType.PROPERTY => propertyName
+                    case TitleType.CONSTANT => titleResource
                     case _ => ""
                 }
             }
@@ -38,10 +30,10 @@ class RowLayout (
             for (a: AggregateFunction <- aggregateFunctions) {
                 if (returnValue == "") {
                     returnValue = a match {
-                        case MAX => max(properties)
-                        case MIN => min(properties)
-                        case AVG => avg(properties)
-                        case NOTHING => flatten(properties)
+                        case AggregateFunction.MAX => max(properties)
+                        case AggregateFunction.MIN => min(properties)
+                        case AggregateFunction.AVG => avg(properties)
+                        case AggregateFunction.NOTHING => flatten(properties)
                     }
                 }
             }

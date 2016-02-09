@@ -17,10 +17,10 @@ object LayoutMock {
     COUNTRY_LAYOUT.left = 980
     COUNTRY_LAYOUT.top = 10
     COUNTRY_LAYOUT.properties = List(
-        new RowLayout("http://dbpedia.org/ontology/areaTotal", List(CONSTANT), "Area", List(NOTHING)))
+        new RowLayout("http://dbpedia.org/ontology/areaTotal", List(TitleType.CONSTANT), "Area", List(AggregateFunction.NOTHING)))
     COUNTRY_LAYOUT.horizontalLines = "1px solid gray"
     COUNTRY_LAYOUT.verticalLines = "1px solid silver"
-    COUNTRY_LAYOUT.titleTypes = List(CONSTANT)
+    COUNTRY_LAYOUT.titleTypes = List(TitleType.CONSTANT)
 
     final val CITY_LAYOUT = new BlockLayout("http://dbpedia.org/ontology/City")
     CITY_LAYOUT.title = "City"
@@ -33,11 +33,11 @@ object LayoutMock {
     CITY_LAYOUT.left = 10
     CITY_LAYOUT.top = 10
     CITY_LAYOUT.properties = List(
-        new RowLayout("http://dbpedia.org/ontology/populationTotal", List(CONSTANT), "Population", List(NOTHING)),
-        new RowLayout("http://dbpedia.org/ontology/populationDensity", List(CONSTANT), "Density", List(NOTHING)))
+        new RowLayout("http://dbpedia.org/ontology/populationTotal", List(TitleType.CONSTANT), "Population", List(AggregateFunction.NOTHING)),
+        new RowLayout("http://dbpedia.org/ontology/populationDensity", List(TitleType.CONSTANT), "Density", List(AggregateFunction.NOTHING)))
     CITY_LAYOUT.horizontalLines = "1px solid gray"
     CITY_LAYOUT.verticalLines = "1px solid silver"
-    CITY_LAYOUT.titleTypes = List(CONSTANT)
+    CITY_LAYOUT.titleTypes = List(TitleType.CONSTANT)
 
     final val COUNTRY_CITY_LINE = new LineLayout(CITY_LAYOUT.forClass, COUNTRY_LAYOUT.forClass, "In country")
     COUNTRY_CITY_LINE.lineThickness = 1
@@ -49,6 +49,6 @@ object LayoutMock {
     COUNTRY_CITY_LINE.width = 246
     COUNTRY_CITY_LINE.left = 734
     COUNTRY_CITY_LINE.top = 75
-    COUNTRY_CITY_LINE.titleTypes = List(CONSTANT)
+    COUNTRY_CITY_LINE.titleTypes = List(TitleType.CONSTANT)
 
 }

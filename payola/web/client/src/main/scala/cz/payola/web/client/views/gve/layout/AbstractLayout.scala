@@ -12,27 +12,27 @@ abstract class AbstractLayout(
     var lineThickness: Int) {
 
     def this() = this(
-        defaultGeneralLayout.titleTypes,
-        defaultGeneralLayout.left,
-        defaultGeneralLayout.top,
-        defaultGeneralLayout.width,
-        defaultGeneralLayout.fontColor,
-        defaultGeneralLayout.fontSize,
-        defaultGeneralLayout.lineColor,
-        defaultGeneralLayout.lineType,
-        defaultGeneralLayout.lineThickness
+        DefaultGeneralLayout.titleTypes,
+        DefaultGeneralLayout.left,
+        DefaultGeneralLayout.top,
+        DefaultGeneralLayout.width,
+        DefaultGeneralLayout.fontColor,
+        DefaultGeneralLayout.fontSize,
+        DefaultGeneralLayout.lineColor,
+        DefaultGeneralLayout.lineType,
+        DefaultGeneralLayout.lineThickness
     )
+}
 
-    object defaultGeneralLayout {
-        // var titleTypes: List[TitleType] = Edge.rdfLabelEdges ++ List(Edge.rdfTypeEdge)
-        var titleTypes: List[TitleType] = List(PROPERTY)
-        var left: Int = 10
-        var top: Int = 10
-        val width = 500
-        var fontColor: String = "black"
-        var fontSize: Int = 10
-        var lineColor: String = "black"
-        var lineType: String = "solid"
-        var lineThickness: Int = 1
-    }
+object DefaultGeneralLayout {
+    //         var titleTypes: List[TitleType] = Edge.rdfLabelEdges ++ List(Edge.rdfTypeEdge)
+    var titleTypes: List[TitleType] = List(TitleType.PROPERTY)
+    var left: Int = 10
+    var top: Int = 10
+    val width = 500
+    var fontColor: String = "black"
+    var fontSize: Int = 10
+    var lineColor: String = "black"
+    var lineType: String = "solid"
+    var lineThickness: Int = 1
 }

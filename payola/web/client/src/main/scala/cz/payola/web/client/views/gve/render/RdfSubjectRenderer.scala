@@ -37,10 +37,10 @@ object RdfSubjectRenderer {
         for (t: TitleType <- blockLayout.titleTypes) {
             if (title == "") {
                 title = t match {
-                    case URL => rdfSubject.objectURI
-                    case LABEL => blockLayout.titleSouce
-                    case CONSTANT => blockLayout.title
-                    case PROPERTY => blockLayout.getRowLayout(blockLayout.titleSouce).getTitle
+                    case TitleType.URL => rdfSubject.objectURI
+                    case TitleType.LABEL => blockLayout.titleSource
+                    case TitleType.CONSTANT => blockLayout.title
+                    case TitleType.PROPERTY => blockLayout.getRowLayout(blockLayout.titleSource).getTitle
                     case _ => rdfSubject.objectURI
                 }
             }
@@ -109,12 +109,12 @@ object RdfSubjectRenderer {
             lineValueElement.innerHTML = line.propertyUri
             lineElement.appendChild(lineValueElement)
 
-            for (property: RowLayout <- blockLayout) {
-                val lineValueElement = document.createElement[html.Element]("td")
-                lineValueElement.setAttribute("style", getTdStyle(blockLayout))
-                lineValueElement.innerHTML = property.propertyName
-                lineElement.appendChild(lineValueElement)
-            }
+//            for (property: RowLayout <- blockLayout) {
+//                val lineValueElement = document.createElement[html.Element]("td")
+//                lineValueElement.setAttribute("style", getTdStyle(blockLayout))
+//                lineValueElement.innerHTML = property.propertyName
+//                lineElement.appendChild(lineValueElement)
+//            }
             classLinesElement.appendChild(lineElement)
         }
         classLinesElement

@@ -1,8 +1,6 @@
 package cz.payola.web.client.views.gve.render
 
-import cz.payola.common.rdf.Graph
 import cz.payola.web.client.views.gve.layout.LineLayout
-import cz.payola.web.client.views.gve.data._
 import s2js.adapters.browser.`package`._
 import s2js.adapters.html
 import s2js.adapters.html.Element

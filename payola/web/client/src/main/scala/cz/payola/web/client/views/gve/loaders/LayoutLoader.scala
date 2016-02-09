@@ -14,8 +14,8 @@ object LayoutLoader {
 
 
     def loadLayout():ScreenLayout = {
-        val blockLayouts: Array[BlockLayout] = Array()
-        val lineLayouts: Array[LineLayout] = Array()
+        val blockLayouts: List[BlockLayout] = List()
+        val lineLayouts: List[LineLayout] = List()
 
         // mock
         blockLayouts :+ (LayoutMock.CITY_LAYOUT, LayoutMock.COUNTRY_LAYOUT)

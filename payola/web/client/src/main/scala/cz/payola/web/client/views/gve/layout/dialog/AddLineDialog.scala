@@ -5,7 +5,7 @@ import cz.payola.web.client.events._
 import cz.payola.web.client.views.bootstrap._
 import cz.payola.web.client.views.elements._
 import cz.payola.web.client.views.elements.form.fields._
-import cz.payola.web.client.views.gve.layout.LineLayout
+import cz.payola.web.client.views.gve.layout.{TitleType, LineLayout}
 
 class AddLineDialog(sender: EditLayoutDialog) extends Modal("Add Line")
 {
@@ -51,7 +51,7 @@ class AddLineDialog(sender: EditLayoutDialog) extends Modal("Add Line")
             toClassInput.field.value,
             titleInput.field.value
         )
-        newLine.titleTypes = List(titleTypeInput.field.value)
+        newLine.titleTypes = List(TitleType.fromString(titleTypeInput.field.value))
         newLine.left = leftInput.field.value
         newLine.top = topInput.field.value
         newLine.width = widthInput.field.value

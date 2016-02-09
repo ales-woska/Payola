@@ -57,7 +57,7 @@ class EditLayoutDialog() extends Modal("Edit layout configuration", Nil, Some("S
         new SelectOption("Average", "avg"))
 
     def customTypeSelect(name: String, text: String, options: List[SelectOption]): InputControl[Select] = {
-        val selectedValue: SelectOption = options(0)
+        val selectedValue: SelectOption = options.head
         new InputControl[Select](text, new Select(name, selectedValue.htmlElement.value, text, options), Some("span1"), None)
     }
 

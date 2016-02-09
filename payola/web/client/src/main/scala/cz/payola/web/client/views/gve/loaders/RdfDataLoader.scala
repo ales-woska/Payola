@@ -7,7 +7,7 @@ object RdfDataLoader {
 
     def constructDataStructure(graph: Graph): DataModel = {
 
-        val tables: Array[GveTable] = Array()
+        val tables: List[GveTable] = List()
 
         val classURIs: List[String] = this.getAllClassURIs(graph)
         for (classURI: String <- classURIs) {
@@ -47,7 +47,7 @@ object RdfDataLoader {
     }
 
     private def getClassInstances(graph: Graph, classURI: String): List[RdfObject] = {
-        val instances: Array[RdfObject] = Array()
+        val instances: List[RdfObject] = List()
         for (rdfTypeEdge <- graph.edges.filter{e:Edge => e.uri == Edge.rdfTypeEdge && e.destination.toString == classURI}) {
             instances :+ getClassInstance(rdfTypeEdge.origin, graph)
         }
@@ -58,8 +58,8 @@ object RdfDataLoader {
         val edges = graph.getOutgoingEdges(origin)
         val classUri: String = edges.head.origin.uri
         val instance: RdfObject = new RdfObject(classUri)
-        val objectProperties: Array[RdfObjectProperty] = Array()
-        val literalProperties: Array[RdfProperty] = Array()
+        val objectProperties: List[RdfObjectProperty] = List()
+        val literalProperties: List[RdfProperty] = List()
 
         for (propertyEdge: Edge <- edges) {
             val propertyVertex = propertyEdge.destination

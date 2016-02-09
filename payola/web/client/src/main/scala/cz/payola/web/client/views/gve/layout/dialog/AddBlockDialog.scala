@@ -70,20 +70,25 @@ class AddBlockDialog(sender: EditLayoutDialog) extends Modal("Add Block")
         color = vLineColorInput.field.value.get
         val verticalLine = vLineThicknessInput.field.value + "px " + vLineTypeInput.field.value + " " + color.toString
 
-        val properties = List(new RowLayout(propertyUrlInput.value, List(propertyTitleTypeInput.field.value), propertyTitle.value, propertyAggrFuncInput.field.value))
+        List(new RowLayout("rdf:type", List(TitleType.URL), "name", List(AggregateFunction.NOTHING)))
+        val properties = List(new RowLayout(
+            propertyUrlInput.value,
+            List(TitleType.fromString(propertyTitleTypeInput.field.value)),
+            propertyTitle.value,
+            List(AggregateFunction.fromString(propertyAggrFuncInput.field.value))))
 
         color = fillColorInput.field.value.get
         val newBlock: BlockLayout = new BlockLayout(
             classInput.field.value,
             titleInput.field.value,
+            titleInput.field.value,
             color.toString,
             heightInput.field.value,
-            horizontalLine,
             verticalLine,
+            horizontalLine,
             properties
         )
-
-        newBlock.titleTypes = List(titleTypeInput.field.value)
+        newBlock.titleTypes = List(TitleType.fromString(titleTypeInput.field.value))
         newBlock.left = leftInput.field.value
         newBlock.top = topInput.field.value
         newBlock.width = widthInput.field.value
