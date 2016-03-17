@@ -46,37 +46,37 @@ class AddLineDialog(sender: EditLayoutDialog) extends Modal("Add Line")
     }
 
     confirming += { e =>
-        val newLine = new LineLayout(
-            fromClassInput.field.value,
-            toClassInput.field.value,
-            titleInput.field.value
-        )
-        newLine.titleTypes = List(TitleType.fromString(titleTypeInput.field.value))
-        newLine.left = leftInput.field.value
-        newLine.top = topInput.field.value
-        newLine.width = widthInput.field.value
-        var color: Color = fontColorInput.field.value.get
-        newLine.fontColor = color.toString
-        newLine.fontSize = fontSizeInput.field.value
-        color = lineColorInput.field.value.get
-        newLine.lineColor = color.toString
-        newLine.lineType = lineTypeInput.field.value
-        newLine.lineThickness = lineThicknessInput.field.value
-
-        sender.lines = sender.lines ++ List(newLine)
-
-        val newDiv = new Div(List(new Text(titleInput.field.value)))
-        newDiv.htmlElement.innerHTML = titleInput.field.value
-        val scale = 3
-        newDiv.setAttribute("style",
-            "position: absolute;" +
-                "color: " + newLine.fontColor +  "px; " +
-                "width: " + newLine.width/scale +  "px; " +
-                "height: 10px; " +
-                "border-bottom: 1px solid "  + newLine.lineColor +  "; " +
-                "top: "  + (70 + newLine.top/scale) +  "px;" +
-                "left: "  + (5 + newLine.left/scale) +  "px;")
-        newDiv.render(sender.blockHtmlElement)
+//        val newLine = new LineLayout(
+//            fromClassInput.field.value,
+//            toClassInput.field.value,
+//            titleInput.field.value
+//        )
+//        newLine.titleTypes = List(TitleType.fromString(titleTypeInput.field.value))
+//        newLine.left = leftInput.field.value
+//        newLine.top = topInput.field.value
+//        newLine.width = widthInput.field.value
+//        var color: Color = fontColorInput.field.value.get
+//        newLine.fontColor = color.toString
+//        newLine.fontSize = fontSizeInput.field.value
+//        color = lineColorInput.field.value.get
+//        newLine.lineColor = color.toString
+//        newLine.lineType = lineTypeInput.field.value
+//        newLine.lineThickness = lineThicknessInput.field.value
+//
+//        sender.lines = sender.lines ++ List(newLine)
+//
+//        val newDiv = new Div(List(new Text(titleInput.field.value)))
+//        newDiv.htmlElement.innerHTML = titleInput.field.value
+//        val scale = 3
+//        newDiv.setAttribute("style",
+//            "position: absolute;" +
+//                "color: " + newLine.fontColor +  "px; " +
+//                "width: " + newLine.width/scale +  "px; " +
+//                "height: 10px; " +
+//                "border-bottom: 1px solid "  + newLine.lineColor +  "; " +
+//                "top: "  + (70 + newLine.top/scale) +  "px;" +
+//                "left: "  + (5 + newLine.left/scale) +  "px;")
+//        newDiv.render(sender.blockHtmlElement)
         true
     }
 

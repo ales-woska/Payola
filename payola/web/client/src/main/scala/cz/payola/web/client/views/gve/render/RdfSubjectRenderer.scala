@@ -34,7 +34,7 @@ object RdfSubjectRenderer {
 
     def getTitle(rdfSubject: RdfObject, blockLayout: BlockLayout): String = {
         var title = ""
-        for (t: TitleType <- blockLayout.titleTypes) {
+        for (t: String <- blockLayout.titleTypes) {
             if (title == "") {
                 title = t match {
                     case TitleType.URL => rdfSubject.objectURI

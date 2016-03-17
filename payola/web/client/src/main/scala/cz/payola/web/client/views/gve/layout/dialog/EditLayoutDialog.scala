@@ -35,8 +35,6 @@ class EditLayoutDialog() extends Modal("Edit layout configuration", Nil, Some("S
 
     def layoutInputTextStyle = "font-size: 10px; padding: 0 2px;"
 
-    val placeholder = new Div()
-
     def lineTypeOptions = List(
         new SelectOption("Solid", "solid"),
         new SelectOption("Dotted", "dotted"),
@@ -59,9 +57,8 @@ class EditLayoutDialog() extends Modal("Edit layout configuration", Nil, Some("S
     def customTypeSelect(name: String, text: String, options: List[SelectOption]): InputControl[Select] = {
         val selectedValue: SelectOption = options.head
         new InputControl[Select](text, new Select(name, selectedValue.htmlElement.value, text, options), Some("span1"), None)
+        null
     }
-
-    override val body = List(placeholder)
 
     override def createSubViews = {
         saveButton.mouseClicked += { e => buttonClickedHandler(confirming)}
@@ -89,6 +86,7 @@ class EditLayoutDialog() extends Modal("Edit layout configuration", Nil, Some("S
         ), "modal hide " + cssClass)
         modalDiv.setAttribute("style", "width: 1200px; margin-left: -600px;")
         List(modalDiv)
+        null
     }
 
     private def buttonClickedHandler(eventToTrigger: SimpleBooleanEvent[this.type]): Boolean = {

@@ -2,16 +2,16 @@ package cz.payola.web.client.views.gve.layout
 
 class RowLayout (
     val propertyName: String,
-    val titleType: List[TitleType],
+    val titleTypes: List[String],
     val titleResource: String,
-    val aggregateFunctions: List[AggregateFunction]) {
+    val aggregateFunctions: List[String]) {
 
     def getTitle: String = {
         var returnTitle: String = ""
-        for (t:TitleType <- titleType) {
+        for (titleType:String <- titleTypes) {
             if (returnTitle == "")
             {
-                returnTitle = t match {
+                returnTitle = titleType match {
                     case TitleType.URL => propertyName
                     case TitleType.PROPERTY => propertyName
                     case TitleType.CONSTANT => titleResource
@@ -27,9 +27,9 @@ class RowLayout (
             properties.head
         } else {
             var returnValue: String = ""
-            for (a: AggregateFunction <- aggregateFunctions) {
+            for (aggregateFunction: String <- aggregateFunctions) {
                 if (returnValue == "") {
-                    returnValue = a match {
+                    returnValue = aggregateFunction match {
                         case AggregateFunction.MAX => max(properties)
                         case AggregateFunction.MIN => min(properties)
                         case AggregateFunction.AVG => avg(properties)

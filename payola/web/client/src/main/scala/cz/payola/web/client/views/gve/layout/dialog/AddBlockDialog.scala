@@ -7,8 +7,7 @@ import cz.payola.web.client.views.elements._
 import cz.payola.web.client.views.elements.form.fields._
 import cz.payola.web.client.views.gve.layout._
 
-class AddBlockDialog(sender: EditLayoutDialog) extends Modal("Add Block")
-{
+class AddBlockDialog(sender: EditLayoutDialog) extends Modal("Add Block") {
     val classInput = new InputControl[TextInput]("Class", new TextInput("class", "", "Class"), Some("small"), None)
     val titleInput = new InputControl[TextInput]("Title/Source", new TextInput("title", "", "Class title"), Some("span1"), None)
     val titleTypeInput = sender.customTypeSelect("titleType", "Title Type", sender.titleTypeOptions)
@@ -63,6 +62,10 @@ class AddBlockDialog(sender: EditLayoutDialog) extends Modal("Add Block")
         propertyAggrFuncInput
     )
 
+    val div:Div = new Div(allElements)
+
+    override val body = List(div)
+
     confirming += { e =>
         var color: Color = hLineColorInput.field.value.get
         val horizontalLine = hLineThicknessInput.field.value + "px " + hLineTypeInput.field.value + " " + color.toString
@@ -70,60 +73,55 @@ class AddBlockDialog(sender: EditLayoutDialog) extends Modal("Add Block")
         color = vLineColorInput.field.value.get
         val verticalLine = vLineThicknessInput.field.value + "px " + vLineTypeInput.field.value + " " + color.toString
 
-        List(new RowLayout("rdf:type", List(TitleType.URL), "name", List(AggregateFunction.NOTHING)))
-        val properties = List(new RowLayout(
-            propertyUrlInput.value,
-            List(TitleType.fromString(propertyTitleTypeInput.field.value)),
-            propertyTitle.value,
-            List(AggregateFunction.fromString(propertyAggrFuncInput.field.value))))
-
-        color = fillColorInput.field.value.get
-        val newBlock: BlockLayout = new BlockLayout(
-            classInput.field.value,
-            titleInput.field.value,
-            titleInput.field.value,
-            color.toString,
-            heightInput.field.value,
-            verticalLine,
-            horizontalLine,
-            properties
-        )
-        newBlock.titleTypes = List(TitleType.fromString(titleTypeInput.field.value))
-        newBlock.left = leftInput.field.value
-        newBlock.top = topInput.field.value
-        newBlock.width = widthInput.field.value
-        color = fontColorInput.field.value.get
-        newBlock.fontColor = color.toString
-        newBlock.fontSize = fontSizeInput.field.value
-        color = lineColorInput.field.value.get
-        newBlock.lineColor = color.toString
-        newBlock.lineType = lineTypeInput.field.value
-        newBlock.lineThickness = lineThicknessInput.field.value
-    
-        sender.blocks = sender.blocks ++ List(newBlock)
-
-        val newDiv = new Div(List(new Text(classInput.field.value)))
-        newDiv.htmlElement.innerHTML = classInput.field.value
-        val scale = 3
-        newDiv.setAttribute("style",
-            "position: absolute;" +
-            "width: " + newBlock.width/scale +  "px; " +
-            "height:"  + newBlock.height/scale +  "px; " +
-            "background-color: " + newBlock.background + ";" +
-            "top: "  + (70 + newBlock.top/scale) +  "px;" +
-            "left: "  + (5 + newBlock.left/scale) +  "px;")
-        newDiv.render(sender.blockHtmlElement)
-
+//        List(new RowLayout("rdf:type", List(TitleType.URL), "name", List(AggregateFunction.NOTHING)))
+//        val properties = List(new RowLayout(
+//            propertyUrlInput.value,
+//            List(TitleType.fromString(propertyTitleTypeInput.field.value)),
+//            propertyTitle.value,
+//            List(AggregateFunction.fromString(propertyAggrFuncInput.field.value))))
+//
+//        color = fillColorInput.field.value.get
+//        val newBlock: BlockLayout = new BlockLayout(
+//            classInput.field.value,
+//            titleInput.field.value,
+//            titleInput.field.value,
+//            color.toString,
+//            heightInput.field.value,
+//            verticalLine,
+//            horizontalLine,
+//            properties
+//        )
+//        newBlock.titleTypes = List(TitleType.fromString(titleTypeInput.field.value))
+//        newBlock.left = leftInput.field.value
+//        newBlock.top = topInput.field.value
+//        newBlock.width = widthInput.field.value
+//        color = fontColorInput.field.value.get
+//        newBlock.fontColor = color.toString
+//        newBlock.fontSize = fontSizeInput.field.value
+//        color = lineColorInput.field.value.get
+//        newBlock.lineColor = color.toString
+//        newBlock.lineType = lineTypeInput.field.value
+//        newBlock.lineThickness = lineThicknessInput.field.value
+//
+//        sender.blocks = sender.blocks ++ List(newBlock)
+//
+//        val newDiv = new Div(List(new Text(classInput.field.value)))
+//        newDiv.htmlElement.innerHTML = classInput.field.value
+//        val scale = 3
+//        newDiv.setAttribute("style",
+//            "position: absolute;" +
+//            "width: " + newBlock.width/scale +  "px; " +
+//            "height:"  + newBlock.height/scale +  "px; " +
+//            "background-color: " + newBlock.background + ";" +
+//            "top: "  + (70 + newBlock.top/scale) +  "px;" +
+//            "left: "  + (5 + newBlock.left/scale) +  "px;")
+//        newDiv.render(sender.blockHtmlElement)
         true
     }
-
-    val div:Div = new Div(allElements)
 
     for (e <- allElements) {
         e.render(div.htmlElement)
     }
-
-    override val body = List(div)
 
     override def createSubViews = {
         saveButton.mouseClicked += { e => buttonClickedHandler(confirming)}
